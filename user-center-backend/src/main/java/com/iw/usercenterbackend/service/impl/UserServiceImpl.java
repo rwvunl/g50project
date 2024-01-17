@@ -20,67 +20,68 @@ import java.util.regex.Pattern;
 import static com.iw.usercenterbackend.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
- *用户服务实现类
+ * 用户服务实现类
  *
  * @author rr
-*/
+ */
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-    implements UserService {
+        implements UserService {
     @Resource
     private UserMapper userMapper;
 
     /**
-     * 盐值：混淆密码
+     * 盐值：用于混淆密码
+     * 现在随便写死了之后看看有没有时间补。。
      */
-    private static final String SALT = "yupi";
-
+    private static final String SALT = "salt";
 
     @Override
-    public long  userRegister(String userAccount, String userPassword, String checkPassword) {
+    public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1.校验用户的账户、密码、校验密码，是否符合要求
         // 1.1.非空校验
-        if(StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)){
+        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
             // return -1;
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"Lack Parameters.");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "Lack Parameters.");
         }
         // 1.2. 账户长度不小于4位
-        if(userAccount.length() < 4){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"Account no short than 4 characters.");
+        if (userAccount.length() < 4) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "Account no short than 4 characters.");
         }
         // 1.3. 密码不小于8位
-        if(userPassword.length() < 8 || checkPassword.length() < 8){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"Password no short than 8 characters.");
+        if (userPassword.length() < 8 || checkPassword.length() < 8) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "Password no short than 8 characters.");
         }
         // 1.4. 账户不包含特殊字符
         String validRule = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~!@#¥%...... &*()——+|{}【】‘;:”“’。，、?]";
         Matcher matcher = Pattern.compile(validRule).matcher(userAccount);
         // 如果包含非法字符，则返回
-        if(matcher.find()){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"Account cannot include special characters and spaces.");
+        if (matcher.find()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,
+                    "Account cannot include special characters and spaces.");
         }
         // 1.5. 密码和校验密码相同
-        if (!userPassword.equals(checkPassword)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"Two passwords must be the same.");
+        if (!userPassword.equals(checkPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "Two passwords must be the same.");
         }
         // 1.6. 账户不能重复
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userAccount",userAccount);
+        queryWrapper.eq("userAccount", userAccount);
         long count = userMapper.selectCount(queryWrapper);
-        if(count>0){
+        if (count > 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "Account dupilicated.");
         }
         // 2. 加密
-        String encryptPassword = DigestUtils.md5DigestAsHex((SALT+userPassword).getBytes());
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
         // 3. 插入数据
         User user = new User();
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
         user.setUsername(userAccount);
         boolean saveResult = this.save(user);
-        if(!saveResult){
-            throw new BusinessException(ErrorCode.NULL_ERROR,"Register failed.");
+        if (!saveResult) {
+            throw new BusinessException(ErrorCode.NULL_ERROR, "Register failed.");
         }
         return user.getId();
     }
@@ -89,55 +90,57 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
         // 1.校验用户的账户、密码、校验密码，是否符合要求
         // 1.1.非空校验
-        if(StringUtils.isAnyBlank(userAccount, userPassword)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"Lack Parameters.");
+        if (StringUtils.isAnyBlank(userAccount, userPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "Lack Parameters.");
         }
         // 1.2. 账户长度不小于4位
-        if(userAccount.length() < 4){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"Account no short than 4 characters.");
+        if (userAccount.length() < 4) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "Account no short than 4 characters.");
         }
         // 1.3. 密码不小于8位
-        if(userPassword.length() < 8 ){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"Password no short than 8 characters.");
+        if (userPassword.length() < 8) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "Password no short than 8 characters.");
         }
         // 1.4. 账户不包含特殊字符
         String validRule = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~!@#¥%...... &*()——+|{}【】‘;:”“’。，、?]";
         Matcher matcher = Pattern.compile(validRule).matcher(userAccount);
         // 如果包含非法字符，则返回
-        if(matcher.find()){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"Account cannot include special characters and spaces.");
+        if (matcher.find()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,
+                    "Account cannot include special characters and spaces.");
         }
         // 1.5. 加密
-        String encryptPassword = DigestUtils.md5DigestAsHex((SALT+userPassword).getBytes());
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
 
         // 2. 查数据库：根据用户和密码查询用户是否存在
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userAccount",userAccount);
-        queryWrapper.eq("userPassword",encryptPassword);
+        queryWrapper.eq("userAccount", userAccount);
+        queryWrapper.eq("userPassword", encryptPassword);
         User user = userMapper.selectOne(queryWrapper); // 查找满足两个equal条件的数据然后返回user对象
         // 用户不存在
-        if(user == null){
+        if (user == null) {
             log.info("user login failed, userAccount cannot match userPassword");
-            throw new BusinessException(ErrorCode.NULL_ERROR,"Account doesn't exist or cannot match password.");
+            throw new BusinessException(ErrorCode.NULL_ERROR, "Account doesn't exist or cannot match password.");
         }
 
         // 3. 用户脱敏
         User safetyUser = getSafetyUser(user);
         // 4. 记录用户的登陆态
-        request.getSession().setAttribute(USER_LOGIN_STATE,safetyUser);
+        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUser);
 
         return safetyUser;
     }
 
     /**
      * 用户脱敏
+     * 
      * @param originUser
      * @return
      */
     @Override
-    public User getSafetyUser(User originUser){
+    public User getSafetyUser(User originUser) {
         // 3. 用户脱敏
-        if(originUser == null){
+        if (originUser == null) {
             return null;
         }
         User safetyUser = new User();
@@ -156,11 +159,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 用户注销
+     * 
      * @param request
      */
     @Override
     public int userLogout(HttpServletRequest request) {
-        //移除登陆态
+        // 移除登陆态
         request.getSession().removeAttribute(USER_LOGIN_STATE);
         return 1;
     }
@@ -172,8 +176,3 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
 }
-
-
-
-
-
