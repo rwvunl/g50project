@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-redis-mysql #暴露名
+spec:
+  ports:
+    - port: 8080 #项目端口
+      targetPort: 8080 #pod节点内部服务的端口
+      protocol: TCP
+      #NOde上的静态端口
+      nodePort: 31004
+  type: NodePort
+  selector:
+    app: demo-redis-mysql
+    
