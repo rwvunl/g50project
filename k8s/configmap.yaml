@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  db_url: "jdbc:mysql://mysql-service:3306/ucspace?autoReconnect=true&serverTimezone=UTC&useSSL=False&allowPublicKeyRetrieval=true"
+  session_timeout: "86400"
+  database_name: "ucspace"
