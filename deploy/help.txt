@@ -1,0 +1,48 @@
+docker run -p 80:80 1e9711eb232d
+docker run -p 8080:8080 f12e369d8028
+docker --net=host run -p 8080:8080 f12e369d8028 
+
+docker tag 1e9711eb232d localhost:32000/frontendv0.0.1
+docker push localhost:32000/frontendv0.0.1
+
+kubectl apply -f deployment-frontend.yml
+kubectl get pods -l app=frontend
+
+kubectl apply -f service-frontend.yaml
+kubectl get service
+
+
+
+kubectl get nodes
+
+
+kubectl delete services frontend-service backend-service
+kubectl delete deployment frontend-deployment backend-deployment
+
+Windows ip: 172.27.208.1
+wsl ip: 172.27.212.42
+
+master: 172.18.0.4
+worker: 172.18.0.2
+worker2: 172.18.0.3
+
+
+echo -n 'root' | base64  cm9vdA==
+echo -n 'Ahtozj123@' | base64  QWh0b3pqMTIzQA==
+echo -n '123@' | base64  MTIzQA==
+
+kubectl create secret generic  passwd --from-literal=pass=Ahtozj123@ --dry-run -o yaml
+
+kubectl apply -f secret-mysql.yaml
+kubectl apply -f pv.yaml
+kubectl apply -f deployment-mysql.yaml
+kubectl describe deployment mysql
+kubectl get pods -l app=mysql
+
+kubectl exec --stdin --tty mysql-55d6787f58-9g5xd -- /bin/bash
+mysql -u root -p
+
+kubectl delete deployment,svc mysql
+kubectl delete pvc mysql-pv-claim
+kubectl delete pv mysql-pv-volume
+kubectl delete secret mysql-secret
