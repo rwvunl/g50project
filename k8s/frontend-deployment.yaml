@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ivywr/p3sc-project:frontend0312a
+          image: ivywr/p3sc-project:frontend0313b
           ports:
             - containerPort: 80
 ---
