@@ -13,7 +13,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: backend
+          app: springboot-backend
     ports:
     - protocol: TCP
       port: 3306

@@ -6,7 +6,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: backend
+      app: springboot-backend
   ingress:
   - from:
     - podSelector:
