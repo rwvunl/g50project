@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: springboot-backend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: springboot-backend
@@ -45,7 +45,7 @@ metadata:
   name: backend-service
 spec:
   selector:
-    app: backend-service
+    app: springboot-backend
   ports:
     - protocol: TCP
       port: 8080
