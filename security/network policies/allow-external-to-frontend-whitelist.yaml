@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-to-frontend-whitelist
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: <允许的IP范围>
+  policyTypes:
+  - Ingress
