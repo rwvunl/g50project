@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend_deployment_name }}
+spec:
+  replicas: {{ .Values.backend_replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.backend_app_label }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.backend_app_label }}
+    spec:
+      containers:
+        - name: {{ .Values.backend_containername }}
+          image: {{ .Values.image_repo }}:{{ .Values.backend_imagetag }}
+          ports:
+            - containerPort: {{ .Values.backend_containerport }}
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret_name }}
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret_name }}
+                  key: password
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configmap_name }}
+                  key: db_url
+            - name: SESSION_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.configmap_name }}
+                  key: session_timeout
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.backend_servie_name }}
+spec:
+  selector:
+    app: {{ .Values.backend_deployment_name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.backend_containerport }}
+      targetPort: {{ .Values.backend_targetport }}
