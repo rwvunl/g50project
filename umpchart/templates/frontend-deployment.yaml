@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.frontend_deployment_name }}
+spec:
+  replicas: {{ .Values.frontend_replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.frontend_app_label }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.frontend_app_label }}
+    spec:
+      containers:
+        - name: {{ .Values.frontend_containername }}
+          image: {{ .Values.image_repo }}:{{ .Values.frontend_imagetag }}
+          ports:
+            - containerPort: {{ .Values.frontend_containerport }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.frontend_servie_name }}
+spec:
+  selector:
+    app: {{ .Values.frontend_app_label }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.frontend_containerport }} # Service port
+      targetPort: {{ .Values.frontend_targetport }} # Pod port
+  type: LoadBalancer # eneable access outside cluster by using loadbalancer
