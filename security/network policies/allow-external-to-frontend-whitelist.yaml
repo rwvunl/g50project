@@ -10,6 +10,6 @@ spec:
   ingress:
   - from:
     - ipBlock:
-        cidr: <允许的IP范围>
+        cidr: <whitelist IP>
   policyTypes:
   - Ingress
