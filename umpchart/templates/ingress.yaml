@@ -8,16 +8,16 @@ metadata:
 spec:
   tls:
     - hosts:
-      - {{ .Values.ingress_host }}
+      - {{ .Values.ingress.host }}
       secretName: tls-secret
   rules:
-    - host: {{ .Values.ingress_host }}
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
         - path: /
           pathType: Prefix
           backend:
             service:
-              name: {{ .Values.frontend_servie_name }}
+              name: {{ .Values.frontend.service_name }}
               port:
-                number: {{ .Values.frontend_targetport }}
+                number: {{ .Values.frontend.targetport }}

@@ -1,52 +1,52 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.backend_deployment_name }}
+  name: {{ .Values.backend.deployment_name }}
 spec:
-  replicas: {{ .Values.backend_replicas }}
+  replicas: {{ .Values.backend.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.backend_app_label }}
+      app: {{ .Values.backend.app_label }}
   template:
     metadata:
       labels:
-        app: {{ .Values.backend_app_label }}
+        app: {{ .Values.backend.app_label }}
     spec:
       containers:
-        - name: {{ .Values.backend_containername }}
-          image: {{ .Values.image_repo }}:{{ .Values.backend_imagetag }}
+        - name: {{ .Values.backend.containername }}
+          image: {{ .Values.image_repo }}:{{ .Values.backend.imagetag }}
           ports:
-            - containerPort: {{ .Values.backend_containerport }}
+            - containerPort: {{ .Values.backend.containerport }}
           env:
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret_name }}
+                  name: {{ .Values.secret.name }}
                   key: username
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret_name }}
+                  name: {{ .Values.secret.name }}
                   key: password
             - name: DB_URL
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.configmap_name }}
+                  name: {{ .Values.configmap.name }}
                   key: db_url
             - name: SESSION_TIMEOUT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.configmap_name }}
+                  name: {{ .Values.configmap.name }}
                   key: session_timeout
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.backend_servie_name }}
+  name: {{ .Values.backend.service_name }}
 spec:
   selector:
-    app: {{ .Values.backend_deployment_name }}
+    app: {{ .Values.backend.deployment_name }}
   ports:
     - protocol: TCP
-      port: {{ .Values.backend_containerport }}
-      targetPort: {{ .Values.backend_targetport }}
+      port: {{ .Values.backend.containerport }}
+      targetPort: {{ .Values.backend.targetport }}
