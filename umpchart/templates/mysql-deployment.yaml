@@ -1,81 +1,81 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ .Values.pv_name }}
+  name: {{ .Values.pv.name }}
 spec:
   capacity:
-    storage: {{ .Values.pv_storage }}
+    storage: {{ .Values.pv.storage }}
   volumeMode: Filesystem
   accessModes:
-    - {{ .Values.pv_accessmode }}
+    - {{ .Values.pv.accessmode }}
   persistentVolumeReclaimPolicy: Retain
   storageClassName: standard
   gcePersistentDisk:
-    pdName: {{ .Values.pv_diskname }}
+    pdName: {{ .Values.pv.diskname }}
     fsType: ext4
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.pvc_name }}
+  name: {{ .Values.pvc.name }}
 spec:
   accessModes:
-    - {{ .Values.pvc_accessmode }}
+    - {{ .Values.pvc.accessmode }}
   resources:
     requests:
-      storage: {{ .Values.pvc_requeststorage }}
+      storage: {{ .Values.pvc.requeststorage }}
   storageClassName: standard
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.mysql_deployment_name }}
+  name: {{ .Values.mysql.deployment_name }}
 spec:
-  replicas: {{ .Values.mysql_replicas }}
+  replicas: {{ .Values.mysql.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.mysql_app_label }}
+      app: {{ .Values.mysql.app_label }}
   template:
     metadata:
       labels:
-        app: {{ .Values.mysql_app_label }}
+        app: {{ .Values.mysql.app_label }}
     spec:
       containers:
-        - name: {{ .Values.mysql_containername }}
-          image: {{ .Values.image_repo }}:{{ .Values.mysql_imagetag }}
+        - name: {{ .Values.mysql.containername }}
+          image: {{ .Values.image_repo }}:{{ .Values.mysql.imagetag }}
           ports:
-            - containerPort: {{ .Values.mysql_containerport }}
+            - containerPort: {{ .Values.mysql.containerport }}
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret_name }}
+                  name: {{ .Values.secret.name }}
                   key: password
             - name: MYSQL_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.configmap_name }}
+                  name: {{ .Values.configmap.name }}
                   key: database_name
           volumeMounts:
-            - name: {{ .Values.volume_name }}
-              mountPath: {{ .Values.volume_path }}
+            - name: {{ .Values.volume.name }}
+              mountPath: {{ .Values.volume.path }}
       volumes:
-        - name: {{ .Values.volume_name }}
+        - name: {{ .Values.volume.name }}
           persistentVolumeClaim:
-            claimName: {{ .Values.pvc_name }}
+            claimName: {{ .Values.pvc.name }}
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.mysql_servie_name }}
+  name: {{ .Values.mysql.servie_name }}
 spec:
   selector:
-    app: {{ .Values.mysql_app_label }}
+    app: {{ .Values.mysql.app_label }}
   ports:
     - protocol: TCP
-      port: {{ .Values.mysql_containerport }}
-      targetPort: {{ .Values.mysql_targetport }}
+      port: {{ .Values.mysql.containerport }}
+      targetPort: {{ .Values.mysql.targetport }}
   type: ClusterIP

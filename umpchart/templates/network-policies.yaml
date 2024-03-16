@@ -1,0 +1,119 @@
+{{- if .Values.networkPolicies.allow_back_2_db }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backend-to-mysql
+  namespace: default
+spec:
+  policyTypes:
+  - Ingress
+  podSelector:
+    matchLabels:
+      app: mysql
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: springboot-backend
+    ports:
+    - protocol: TCP
+      port: 3306
+{{- end }}
+
+---
+
+{{- if .Values.networkPolicies.allow_external_2_front }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-to-frontend
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  ingress:
+  - {}
+  policyTypes:
+  - Ingress
+{{- end }}
+
+---
+
+{{- if .Values.networkPolicies.allow_external_2_front_white }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-to-frontend-whitelist
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: {{ .Values.networkPolicies.whitelist_ip }}
+  policyTypes:
+  - Ingress
+{{- end }}
+
+---
+
+{{- if .Values.networkPolicies.allow_front_2_back }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend-only
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: springboot-backend
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: frontend
+    ports:
+    - protocol: TCP
+      port: 8080
+  policyTypes:
+  - Ingress
+{{- end }}
+
+---
+
+{{- if .Values.networkPolicies.deny_all_ingress }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all-ingress
+  namespace: default
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+{{- end }}
+
+---
+
+{{- if .Values.networkPolicies.deny_ip_2_front }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-specific-ips-to-frontend
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - {{ .Values.networkPolicies.blacklist_ip }}
+  policyTypes:
+  - Ingress
+{{- end }}

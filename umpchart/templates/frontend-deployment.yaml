@@ -1,32 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.frontend_deployment_name }}
+  name: {{ .Values.frontend.deployment_name }}
 spec:
-  replicas: {{ .Values.frontend_replicas }}
+  replicas: {{ .Values.frontend.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.frontend_app_label }}
+      app: {{ .Values.frontend.app_label }}
   template:
     metadata:
       labels:
-        app: {{ .Values.frontend_app_label }}
+        app: {{ .Values.frontend.app_label }}
     spec:
       containers:
-        - name: {{ .Values.frontend_containername }}
-          image: {{ .Values.image_repo }}:{{ .Values.frontend_imagetag }}
+        - name: {{ .Values.frontend.containername }}
+          image: {{ .Values.image_repo }}:{{ .Values.frontend.imagetag }}
           ports:
-            - containerPort: {{ .Values.frontend_containerport }}
+            - containerPort: {{ .Values.frontend.containerport }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.frontend_servie_name }}
+  name: {{ .Values.frontend.service_name }}
 spec:
   selector:
-    app: {{ .Values.frontend_app_label }}
+    app: {{ .Values.frontend.app_label }}
   ports:
     - protocol: TCP
-      port: {{ .Values.frontend_containerport }} # Service port
-      targetPort: {{ .Values.frontend_targetport }} # Pod port
+      port: {{ .Values.frontend.containerport }} # Service port
+      targetPort: {{ .Values.frontend.targetport }} # Pod port
   type: LoadBalancer # eneable access outside cluster by using loadbalancer
