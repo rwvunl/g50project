@@ -1,23 +1,25 @@
+{{- if .Values.canary.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress
+  name: ingress-canary
   namespace: default
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   tls:
     - hosts:
-      - {{ .Values.ingress.host }}
+      - {{ .Values.ingress.canary.host }}
       secretName: tls-secret
   rules:
-    - host: {{ .Values.ingress.host }}
+    - host: {{ .Values.ingress.canary.host }}
       http:
         paths:
         - path: /
           pathType: Prefix
           backend:
             service:
-              name: {{ .Values.frontend.service_name }}
+              name: {{ .Values.frontend.canary.service_name }}
               port:
-                number: {{ .Values.frontend.targetport }}
+                number: {{ .Values.frontend.canary.targetport }}
+{{- end }}
