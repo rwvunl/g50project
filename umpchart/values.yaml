@@ -2,7 +2,7 @@ backend:
   deployment_name: springboot-backend
   replicas: 1
   app_label: springboot-backend
-  imagetag: backend0312a
+  imagetag: backend0317a
   containername: springboot-backend
   containerport: 8080
   targetport: 8080
@@ -89,7 +89,7 @@ networkPolicies:
   allow_front_2_back: false
   deny_all_ingress: false
   deny_ip_2_front: true
-  blacklist_ip: 192.168.0.104/32
+  blacklist_ip: 80.112.140.219/32
   whitelist_ip: 4.5.6.0/24
 
 canary:
