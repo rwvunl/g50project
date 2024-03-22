@@ -88,8 +88,8 @@ networkPolicies:
   allow_external_2_front_white: false
   allow_front_2_back: false
   deny_all_ingress: false
-  deny_ip_2_front: false
-  blacklist_ip: 1.2.3.0/24
+  deny_ip_2_front: true
+  blacklist_ip: 192.168.0.104/32
   whitelist_ip: 4.5.6.0/24
 
 canary:

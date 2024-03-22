@@ -1,4 +1,4 @@
-{{- if .Values.networkPolicies.allow_back_2_db }}
+{{ if eq .Values.networkPolicies.allow_back_2_db true }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -18,11 +18,11 @@ spec:
     ports:
     - protocol: TCP
       port: 3306
-{{- end }}
+{{ end }}
 
 ---
 
-{{- if .Values.networkPolicies.allow_external_2_front }}
+{{ if eq .Values.networkPolicies.allow_external_2_front true }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -36,11 +36,11 @@ spec:
   - {}
   policyTypes:
   - Ingress
-{{- end }}
+{{ end }}
 
 ---
 
-{{- if .Values.networkPolicies.allow_external_2_front_white }}
+{{ if eq .Values.networkPolicies.allow_external_2_front_white true }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -56,11 +56,11 @@ spec:
         cidr: {{ .Values.networkPolicies.whitelist_ip }}
   policyTypes:
   - Ingress
-{{- end }}
+{{ end }}
 
 ---
 
-{{- if .Values.networkPolicies.allow_front_2_back }}
+{{ if eq .Values.networkPolicies.allow_front_2_back true }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -80,11 +80,11 @@ spec:
       port: 8080
   policyTypes:
   - Ingress
-{{- end }}
+{{ end }}
 
 ---
 
-{{- if .Values.networkPolicies.deny_all_ingress }}
+{{ if eq .Values.networkPolicies.deny_all_ingress true }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -94,11 +94,11 @@ spec:
   podSelector: {}
   policyTypes:
   - Ingress
-{{- end }}
+{{ end }}
 
 ---
 
-{{- if .Values.networkPolicies.deny_ip_2_front }}
+{{ if eq .Values.networkPolicies.deny_ip_2_front true }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -116,4 +116,4 @@ spec:
         - {{ .Values.networkPolicies.blacklist_ip }}
   policyTypes:
   - Ingress
-{{- end }}
+{{ end }}
