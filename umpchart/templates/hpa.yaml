@@ -1,3 +1,4 @@
+{{- if .Values.hpa.enabled }}
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
@@ -21,3 +22,4 @@ spec:
     name: {{ .Values.backend.deployment_name }}
   minReplicas: {{ .Values.backend.hpa_minReplicas}}
   maxReplicas: {{ .Values.backend.hpa_maxReplicas }}
+{{- end }}

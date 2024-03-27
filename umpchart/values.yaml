@@ -8,8 +8,8 @@ backend:
   targetport: 8080
   service_name: backend-service  
   hpa_name: backend-hpa
-  hpa_minReplicas: 3
-  hpa_maxReplicas: 3
+  hpa_minReplicas: 1
+  hpa_maxReplicas: 1
 
 configmap:
   name: app-config
@@ -25,6 +25,9 @@ secret:
 
 image_repo: ivywr/p3sc-project
 
+hpa:
+  enabled: false
+
 frontend:
   deployment_name: frontend-deployment
   replicas: 1
@@ -35,8 +38,8 @@ frontend:
   targetport: 80
   service_name: frontend-service
   hpa_name: frontend-hpa
-  hpa_minReplicas: 3
-  hpa_maxReplicas: 3
+  hpa_minReplicas: 1
+  hpa_maxReplicas: 1
   canary:
     replicas: 1
     deployment_name: frontend-deployment-canary
@@ -90,7 +93,7 @@ networkPolicies:
   deny_all_ingress: false
   deny_ip_2_front: true
   blacklist_ip: 80.112.140.219/32
-  whitelist_ip: 0.0.0.0/24
+  whitelist_ip: 4.5.6.0/24
 
 canary:
   enabled: false
