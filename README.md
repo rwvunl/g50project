@@ -48,7 +48,7 @@
   kubectl apply -f network-policy-allow-external-to-frontend-whitelist.yaml
   kubectl apply -f network-policy-allow-external-to-frontend.yaml
   kubectl apply -f network-policy-allow-frontend-to-backend-only.yaml
-  kubectl apply -f network-policy-default-deny-all-ingress.yamlz
+  kubectl apply -f network-policy-default-deny-all-ingress.yaml
   kubectl apply -f network-policy-deny-specific-ips-to-frontend.yaml
   ```
 
