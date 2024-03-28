@@ -27,6 +27,6 @@ spec:
     app: frontend
   ports:
     - protocol: TCP
-      port: 80 # Service端口
-      targetPort: 80 # Pod端口
-  type: LoadBalancer # 使用LoadBalancer使从集群外部可访问
+      port: 80 # Service
+      targetPort: 80 # Pod
+  type: LoadBalancer

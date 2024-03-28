@@ -2,6 +2,18 @@
 
 ---
 
+### Environment
+
+- Google Kubernetes Engine
+
+- `kubectl --version`
+
+```shell
+Client Version: v1.27.10
+Kustomize Version: v5.0.1
+Server Version: v1.27.10-gke.1055000
+```
+
 ## Pre-requisites
 
 - ### Load Balancer
@@ -17,10 +29,14 @@
   kubectl apply -f mysql-deployment.yaml
   ```
 
-- ### image Registry
+- ### Image Registry
+
+  You can pull image from DockerHub
 
   ```
-  
+  docker pull ivywr/p3sc-project:frontend0313b
+  docker pull ivywr/p3sc-project:backend0317a
+  docker pull ivywr/p3sc-project:mysqlv0.0.2
   ```
 
 - ### certificates
